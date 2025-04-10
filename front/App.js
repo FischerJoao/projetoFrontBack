@@ -7,7 +7,7 @@ export default function App() {
     fetch('http://localhost:3000/add', {
       method: 'POST',
       body: JSON.stringify({
-        nome: 'JOAO'
+        nome: 'MINDGROUP'
       }),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -29,7 +29,6 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
       <Button
       title='AddUser'
       onPress={() =>{addUser()}}

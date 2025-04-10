@@ -43,7 +43,15 @@ let User = mongoose.model('Usuario', new mongoose.Schema({
     nome: String,
 }));
 
-
+//get
+app.get('/users', async (req, res) => {
+    try {
+        let users = await User.find(); //busca todos os usuarios
+        res.status(200).send(users); //responde com os usuarios
+    } catch (err) {
+        res.status(500).send({ message: 'Erro ao buscar usuários', error: err.message }); //responde com erro
+    }
+});
 //rotas
 app.post('/add', async (req, res) => {
     try {
