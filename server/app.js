@@ -43,17 +43,13 @@ let User = mongoose.model('Usuario', new mongoose.Schema({
     nome: String,
 }));
 
-//get
-app.get('/users', async (req, res) => {
-    try {
-        let users = await User.find(); //busca todos os usuarios
-        res.status(200).send(users); //responde com os usuarios
-    } catch (err) {
-        res.status(500).send({ message: 'Erro ao buscar usuários', error: err.message }); //responde com erro
-    }
+//get find()
+app.get("/users", async (req, res) => {
+    const users = await User.find({});
+    res.send(users); // Corrigido
 });
 //rotas
-app.post('/add', async (req, res) => {
+app.post("/add", async (req, res) => {
     try {
         let vnome = req.body.nome; //pega o nome do corpo da requisição
         let item = await new User({ nome: vnome }); //cria um novo objeto do tipo User
@@ -63,6 +59,40 @@ app.post('/add', async (req, res) => {
         res.status(500).send({ message: 'Erro ao adicionar usuário', error: err.message }); // responde com erro
     }
 });
+
+app.put("/update/:id", async (req, res) => {
+    try {
+        console.log('ID recebido:', req.params.id);
+        console.log('Dados recebidos:', req.body); // Verifica os dados enviados pelo frontend
+
+        let id = req.params.id;
+        let item = req.body;
+        const updatedUser = await User.findByIdAndUpdate(id, item, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).send({ message: 'Usuário não encontrado' });
+        }
+
+        res.status(200).send({ message: 'Usuário atualizado com sucesso!', user: updatedUser });
+    } catch (err) {
+        res.status(500).send({ message: 'Erro ao atualizar usuário', error: err.message });
+    }
+});
+
+app.delete("/delelete/:id", async (req, res) => {
+    try {
+        let id = req.params.id;
+        const deletedUser = await User.findByIdAndDelete(id);
+
+        if (!deletedUser) {
+            return res.status(404).send({ message: 'Usuário não encontrado' });
+        }
+
+        res.status(200).send({ message: 'Usuário deletado com sucesso!', user: deletedUser });
+    } catch (err) {
+        res.status(500).send({ message: 'Erro ao deletar usuário', error: err.message });
+    }
+}); 
 
 //cria o servidor
 let server = app.listen(3000, ()=>{
